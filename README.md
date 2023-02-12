@@ -33,6 +33,9 @@ In the instance the custom fields will be separated into the `element name`:
 
 ```python
 # config
+
+from invenio_records_resources.services.custom_fields.text import KeywordCF
+
 TEST_CUSTOM_FIELDS = [
     KeywordCF('blah')
 ]
@@ -68,6 +71,9 @@ model:
 
 ```python
 # config
+
+from invenio_records_resources.services.custom_fields.text import KeywordCF
+
 INLINE_CF = [
     KeywordCF('blah')
 ]
