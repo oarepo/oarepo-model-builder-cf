@@ -1,0 +1,32 @@
+{
+    "type": "object",
+    "additionalProperties": true,
+    "properties": {
+        "metadata": {
+            "properties": {
+                "title": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "id": {
+            "type": "string"
+        },
+        "created": {
+            "type": "string",
+            "format": "date"
+        },
+        "updated": {
+            "type": "string",
+            "format": "date"
+        },
+        "$schema": {
+            "type": "string"
+        },
+        "custom_fields": {
+            "type": "object",
+            "additionalProperties": true
+        }
+    }
+}
