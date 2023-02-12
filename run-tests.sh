@@ -2,9 +2,9 @@
 
 set -e
 
-# python3 -m venv .venv
-# .venv/bin/pip install -U setuptools pip wheel
-# .venv/bin/pip install -e .
+python3 -m venv .venv
+.venv/bin/pip install -U setuptools pip wheel
+.venv/bin/pip install -e .
 
 
 BUILDER=.venv/bin/oarepo-compile-model
