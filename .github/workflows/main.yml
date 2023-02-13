@@ -46,7 +46,7 @@ jobs:
       #     pip list
       - name: Test with pytest
         run: |
-          sh run_tests.sh
+          sh run-tests.sh
 
       - name: Build package to publish
         run: |
