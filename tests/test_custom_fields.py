@@ -1,5 +1,5 @@
-from invenio_access.permissions import system_identity
 from cf.proxies import current_service as cf_service
+from invenio_access.permissions import system_identity
 
 
 def test_invenio_relation(app, db, search_clear, installed_custom_fields):

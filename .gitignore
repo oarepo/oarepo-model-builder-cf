@@ -71,3 +71,5 @@ target/
 .*.sw?
 .DS_Store
 oarepo-vocabularies-monorepo.code-workspace
+
+tests/cf
