@@ -2,16 +2,16 @@
 
 set -e
 
-if test -d .venv ; then
-  rm -rf .venv
+if test -d .venv-builder ; then
+  rm -rf .venv-builder
 fi
 
-python3 -m venv .venv
-.venv/bin/pip install -U setuptools pip wheel
-.venv/bin/pip install -e .
+python3 -m venv .venv-builder
+.venv-builder/bin/pip install -U setuptools pip wheel
+.venv-builder/bin/pip install -e .
 
 
-BUILDER=.venv/bin/oarepo-compile-model
+BUILDER=.venv-builder/bin/oarepo-compile-model
 
 
 if test -d tests/cf ; then

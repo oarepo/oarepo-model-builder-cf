@@ -54,29 +54,15 @@ class CustomFieldsModelComponent(DataTypeComponent):
             },
         )
 
-    def after_model_prepare(self, datatype, **kwargs):
+    def process_marshmallow(self, datatype, section=None, **kwargs):
+
         for cf in datatype.definition.get("custom-fields", []):
             element = cf.get("element", None)
             config = cf.get("config", None)
             if not element:
-                prepend_array(
-                    datatype,
-                    "marshmallow",
-                    "base-classes",
-                    "InlinedCustomFieldsSchemaMixin",
-                )
-                append_array(
-                    datatype,
-                    "marshmallow",
-                    "imports",
-                    {"import": "oarepo_runtime.cf.InlinedCustomFieldsSchemaMixin"},
-                )
-                append_array(
-                    datatype,
-                    "marshmallow",
-                    "extra-fields",
-                    {"name": "CUSTOM_FIELDS_VAR", "value": f'"{config}"'},
-                )
+                section.config["base-classes"] = [ "InlinedCustomFieldsSchemaMixin" ] + section.config["base-classes"]
+                section.config["imports"] += [ {"import": "oarepo_runtime.cf.InlinedCustomFieldsSchemaMixin"} ]
+                section.config.setdefault("extra-fields", []).append({"name": "CUSTOM_FIELDS_VAR", "value": f'"{config}"'})
 
 
 class CustomFieldsElementModelComponent(DataTypeComponent):
@@ -103,6 +89,20 @@ class CustomFieldsElementModelComponent(DataTypeComponent):
                             {"import": "functools.partial"},
                             {"import": "marshmallow_utils.fields.NestedAttribute"},
                         ],
+                        "generate": False
+                    },
+                    "ui": {
+                        "marshmallow": {
+                            "field": f'NestedAttribute(partial(CustomFieldsSchema, fields_var="{config}"))',
+                            "imports": [
+                                {
+                                    "import": "invenio_records_resources.services.custom_fields.CustomFieldsSchema"
+                                },
+                                {"import": "functools.partial"},
+                                {"import": "marshmallow_utils.fields.NestedAttribute"},
+                            ],
+                            "generate": False
+                        }
                     },
                     "sample": {"skip": True},
                 }
