@@ -2,11 +2,12 @@ import marshmallow as ma
 from oarepo_model_builder.datatypes import DataTypeComponent, ModelDataType
 from oarepo_model_builder.datatypes.components import (
     DefaultsModelComponent,
+    RecordDumperModelComponent,
+    RecordModelComponent,
     ServiceModelComponent,
 )
 from oarepo_model_builder.datatypes.components.model.utils import (
     append_array,
-    prepend_array,
     set_default,
 )
 
@@ -55,19 +56,28 @@ class CustomFieldsModelComponent(DataTypeComponent):
         )
 
     def process_marshmallow(self, datatype, section=None, **kwargs):
-
         for cf in datatype.definition.get("custom-fields", []):
             element = cf.get("element", None)
             config = cf.get("config", None)
             if not element:
-                section.config["base-classes"] = [ "InlinedCustomFieldsSchemaMixin" ] + section.config["base-classes"]
-                section.config["imports"] += [ {"import": "oarepo_runtime.cf.InlinedCustomFieldsSchemaMixin"} ]
-                section.config.setdefault("extra-fields", []).append({"name": "CUSTOM_FIELDS_VAR", "value": f'"{config}"'})
+                section.config["base-classes"] = [
+                    "InlinedCustomFieldsSchemaMixin"
+                ] + section.config["base-classes"]
+                section.config["imports"] += [
+                    {"import": "oarepo_runtime.cf.InlinedCustomFieldsSchemaMixin"}
+                ]
+                section.config.setdefault("extra-fields", []).append(
+                    {"name": "CUSTOM_FIELDS_VAR", "value": f'"{config}"'}
+                )
 
 
 class CustomFieldsElementModelComponent(DataTypeComponent):
     eligible_datatypes = [ModelDataType]
-    affects = [DefaultsModelComponent]
+    depends_on = [
+        DefaultsModelComponent,
+        RecordModelComponent,
+        RecordDumperModelComponent,
+    ]
 
     def before_model_prepare(self, datatype, **kwargs):
         for cf in datatype.definition.get("custom-fields", []):
@@ -89,7 +99,7 @@ class CustomFieldsElementModelComponent(DataTypeComponent):
                             {"import": "functools.partial"},
                             {"import": "marshmallow_utils.fields.NestedAttribute"},
                         ],
-                        "generate": False
+                        "generate": False,
                     },
                     "ui": {
                         "marshmallow": {
@@ -101,11 +111,26 @@ class CustomFieldsElementModelComponent(DataTypeComponent):
                                 {"import": "functools.partial"},
                                 {"import": "marshmallow_utils.fields.NestedAttribute"},
                             ],
-                            "generate": False
+                            "generate": False,
                         }
                     },
                     "sample": {"skip": True},
                 }
+
+                already_imported = [
+                    imp["import"] for imp in datatype.definition["record"]["imports"]
+                ]
+                cf_dumper_ext_import = (
+                    "invenio_records_resources.records.dumpers.CustomFieldsDumperExt"
+                )
+                if cf_dumper_ext_import not in already_imported:
+                    datatype.definition["record"]["imports"].append(
+                        {"import": cf_dumper_ext_import}
+                    )
+
+                datatype.definition["record-dumper"]["extensions"].append(
+                    f"CustomFieldsDumperExt('{config}')"
+                )
             else:
                 # just make the schema and mapping extensible
                 set_default(datatype, "jsonschema", {}).setdefault(

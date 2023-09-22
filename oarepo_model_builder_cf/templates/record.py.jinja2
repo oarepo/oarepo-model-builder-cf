@@ -1,13 +1,6 @@
-from invenio_records_resources.records.dumpers import CustomFieldsDumperExt
 from oarepo_runtime.cf import CustomFields, InlinedCustomFields
 
 class {{ vars.record|class_header }}:
-    dumper_extensions = [
-{% for cf in vars.custom_fields %}
-        CustomFieldsDumperExt("{{cf.config}}"),
-{% endfor %}
-    ]
-
 {% for cf in vars.custom_fields %}
 {%if cf.element %}
     {{cf.element}} = CustomFields(

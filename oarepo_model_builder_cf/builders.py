@@ -5,4 +5,3 @@ class InvenioRecordCFBuilder(InvenioBaseClassPythonBuilder):
     TYPE = "invenio_record_cf"
     section = "record"
     template = "record_cf"
-
