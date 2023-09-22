@@ -1,5 +1,6 @@
 from oarepo_runtime.cf import CustomFields, InlinedCustomFields
 
+{% if vars.custom_fields %}
 class {{ vars.record|class_header }}:
 {% for cf in vars.custom_fields %}
 {%if cf.element %}
@@ -13,3 +14,4 @@ class {{ vars.record|class_header }}:
     inlined_custom_fields = InlinedCustomFields("{{cf.config}}")
 {% endif %}
 {% endfor %}
+{% endif %}
