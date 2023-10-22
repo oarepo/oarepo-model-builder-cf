@@ -1,7 +1,14 @@
+from oarepo_runtime.records import SystemFieldDumperExt
 from oarepo_runtime.cf import CustomFields, InlinedCustomFields
 
 {% if vars.custom_fields %}
 class {{ vars.record|class_header }}:
+    dumper_extensions = [
+{% if vars.custom_fields %}
+        SystemFieldDumperExt(),
+{% endif %}
+    ]
+
 {% for cf in vars.custom_fields %}
 {%if cf.element %}
     {{cf.element}} = CustomFields(
