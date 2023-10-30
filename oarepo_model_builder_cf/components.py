@@ -61,11 +61,8 @@ class CustomFieldsModelComponent(DataTypeComponent):
             config = cf.get("config", None)
             if not element:
                 section.config["base-classes"] = [
-                    "InlinedCustomFieldsSchemaMixin"
+                    "oarepo_runtime.cf.InlinedCustomFieldsSchemaMixin"
                 ] + section.config["base-classes"]
-                section.config["imports"] += [
-                    {"import": "oarepo_runtime.cf.InlinedCustomFieldsSchemaMixin"}
-                ]
                 section.config.setdefault("extra-fields", []).append(
                     {"name": "CUSTOM_FIELDS_VAR", "value": f'"{config}"'}
                 )
@@ -91,26 +88,12 @@ class CustomFieldsElementModelComponent(DataTypeComponent):
                     "jsonschema": {"additionalProperties": True},
                     "mapping": {"type": "object", "dynamic": True},
                     "marshmallow": {
-                        "field": f'NestedAttribute(partial(CustomFieldsSchema, fields_var="{config}"))',
-                        "imports": [
-                            {
-                                "import": "invenio_records_resources.services.custom_fields.CustomFieldsSchema"
-                            },
-                            {"import": "functools.partial"},
-                            {"import": "marshmallow_utils.fields.NestedAttribute"},
-                        ],
+                        "field": f'{{{{marshmallow_utils.fields.NestedAttribute}}}}({{{{functools.partial}}}}({{{{invenio_records_resources.services.custom_fields.CustomFieldsSchema}}}}, fields_var="{config}"))',
                         "generate": False,
                     },
                     "ui": {
                         "marshmallow": {
-                            "field": f'NestedAttribute(partial(CustomFieldsSchema, fields_var="{config}"))',
-                            "imports": [
-                                {
-                                    "import": "invenio_records_resources.services.custom_fields.CustomFieldsSchema"
-                                },
-                                {"import": "functools.partial"},
-                                {"import": "marshmallow_utils.fields.NestedAttribute"},
-                            ],
+                            "field": f'{{{{marshmallow_utils.fields.NestedAttribute}}}}({{{{functools.partial}}}}({{{{invenio_records_resources.services.custom_fields.CustomFieldsSchema}}}}, fields_var="{config}"))',
                             "generate": False,
                         }
                     },
@@ -120,16 +103,9 @@ class CustomFieldsElementModelComponent(DataTypeComponent):
                 already_imported = [
                     imp["import"] for imp in datatype.definition["record"]["imports"]
                 ]
-                cf_dumper_ext_import = (
-                    "invenio_records_resources.records.dumpers.CustomFieldsDumperExt"
-                )
-                if cf_dumper_ext_import not in already_imported:
-                    datatype.definition["record"]["imports"].append(
-                        {"import": cf_dumper_ext_import}
-                    )
 
                 datatype.definition["record-dumper"]["extensions"].append(
-                    f"CustomFieldsDumperExt('{config}')"
+                    f"{{{{invenio_records_resources.records.dumpers.CustomFieldsDumperExt}}}}('{config}')"
                 )
             else:
                 # just make the schema and mapping extensible
