@@ -36,6 +36,6 @@ def app_config(app_config):
 
 @pytest.fixture
 def installed_custom_fields(search):
-    from oarepo_runtime.cf.mappings import prepare_cf_indices
+    from oarepo_runtime.services.custom_fields.mappings import prepare_cf_indices
 
     prepare_cf_indices()

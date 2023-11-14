@@ -53,7 +53,7 @@ class CustomFieldsModelComponent(DataTypeComponent):
             config = cf.get("config", None)
             if not element:
                 section.config["base-classes"] = [
-                    "oarepo_runtime.cf.InlinedCustomFieldsSchemaMixin"
+                    "oarepo_runtime.services.custom_fields.InlinedCustomFieldsSchemaMixin"
                 ] + section.config["base-classes"]
                 section.config.setdefault("extra-fields", []).append(
                     {"name": "CUSTOM_FIELDS_VAR", "value": f'"{config}"'}
