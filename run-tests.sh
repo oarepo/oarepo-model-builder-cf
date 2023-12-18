@@ -3,7 +3,6 @@
 set -e
 
 OAREPO_VERSION=${OAREPO_VERSION:-11}
-OAREPO_VERSION_MAX=$((OAREPO_VERSION+1))
 
 if test -d .venv-builder ; then
   rm -rf .venv-builder
@@ -30,7 +29,7 @@ python3 -m venv .venv-tests
 source .venv-tests/bin/activate
 
 pip install -U setuptools pip wheel
-pip install "oarepo>=$OAREPO_VERSION,<$OAREPO_VERSION_MAX"
+pip install "oarepo[tests]==${OAREPO_VERSION}.*"
 pip install -e 'tests/cf[tests]'
 pip install pytest-invenio
 
