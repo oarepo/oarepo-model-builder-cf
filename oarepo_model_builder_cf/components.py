@@ -45,7 +45,7 @@ class CustomFieldsModelComponent(DataTypeComponent):
             return data
 
     def before_model_prepare(self, datatype, **kwargs):
-        append_array(datatype, "service-config", "components", "{{invenio_records_resources.services.records.components.DataComponent}}")
+        append_array(datatype, "service-config", "components", "{{oarepo_runtime.services.components.CustomFieldsComponent}}")
 
     def process_marshmallow(self, datatype, section=None, **kwargs):
         for cf in datatype.definition.get("custom-fields", []):
