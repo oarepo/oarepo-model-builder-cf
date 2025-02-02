@@ -29,7 +29,7 @@ python3 -m venv .venv-tests
 source .venv-tests/bin/activate
 
 pip install -U setuptools pip wheel
-pip install "oarepo[tests]==${OAREPO_VERSION}.*"
+pip install "oarepo[tests,rdm]==${OAREPO_VERSION}.*"
 pip install -e 'tests/cf[tests]'
 pip install pytest-invenio
 
